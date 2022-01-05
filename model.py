@@ -2,7 +2,8 @@ import torch
 from torch import nn, optim
 from transformers import BertModel
 from tqdm import tqdm
-import numpy as np
+
+from utils import Averager
 
 class BERTModel(nn.Module):
     def __init__(self, pretrain_dir):
@@ -21,7 +22,7 @@ class BERTModel(nn.Module):
         output = self.linear_relu_stack(feature)
         return output
 
-class Trainer():
+class Trainer:
     def __init__(self, device, pretrain_dir, train_dataloader, val_dataloader, test_dataloader, epoch, lr):
         self.device = device
         self.epoch = epoch
@@ -35,7 +36,7 @@ class Trainer():
     def train(self):
         for epoch in range(self.epoch):
             self.model.train()
-            losses = []
+            avg_loss = Averager()
             for i, batch in enumerate(tqdm(self.train_dataloader)):
                 input_ids = batch['input_ids'].to(self.device)
                 attention_mask = batch['attention_mask'].to(self.device)
@@ -46,8 +47,8 @@ class Trainer():
                 loss = self.criterion(output, label)
                 loss.backward()
                 self.optimizer.step()
-                losses.append(loss.item())
-            print('epoch %d: loss = %.4f' % (epoch+1, np.mean(losses)))
+                avg_loss.add(loss.item())
+            print('epoch %d: loss = %.4f' % (epoch+1, avg_loss.get()))
 
-    def test(self):
+    def test(self, dataloader):
         pass
