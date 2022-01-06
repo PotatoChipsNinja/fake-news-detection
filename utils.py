@@ -1,4 +1,4 @@
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 
 class Averager:
     def __init__(self):
@@ -18,7 +18,7 @@ class Recorder:
         self.best_score = 0
         self.best_epoch = 0
         self.epoch = 0
-    
+
     def update(self, score):
         self.epoch += 1
         if score > self.best_score:
@@ -30,8 +30,12 @@ class Recorder:
         else:
             return 'continue'
 
-def metrics(y_true, y_pred):
+def metrics(y_true, y_score):
     results = dict()
-    results['acc'] = accuracy_score(y_true, y_pred)
+    y_pred = y_score.round()
+    results['accuracy'] = accuracy_score(y_true, y_pred)
     results['f1'] = f1_score(y_true, y_pred, average='macro')
+    results['precision'] = precision_score(y_true, y_pred, average='macro')
+    results['recall'] = recall_score(y_true, y_pred, average='macro')
+    results['auc'] = roc_auc_score(y_true, y_score)
     return results
