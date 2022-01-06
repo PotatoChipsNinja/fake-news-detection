@@ -39,7 +39,7 @@ def main(args):
     }
 
     train_dataloader, val_dataloader, test_dataloader = get_dataloader(args.data_dir, args.pretrain_dir, args.batch_size, category_dict, args.max_len, args.dataloader_cache)
-    trainer = Trainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr)
+    trainer = Trainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.model_cache)
     trainer.train()
 
     return 0
