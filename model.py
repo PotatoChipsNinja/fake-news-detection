@@ -3,7 +3,7 @@ from torch import nn, optim
 from transformers import BertModel
 from tqdm import tqdm
 
-from utils import Averager, metrics
+from utils import Averager, Recorder, metrics
 
 class BERTModel(nn.Module):
     def __init__(self, pretrain_dir):
@@ -24,17 +24,19 @@ class BERTModel(nn.Module):
         return output
 
 class Trainer:
-    def __init__(self, device, pretrain_dir, train_dataloader, val_dataloader, test_dataloader, epoch, lr):
+    def __init__(self, device, pretrain_dir, train_dataloader, val_dataloader, test_dataloader, epoch, lr, model_cache):
         self.device = device
         self.epoch = epoch
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
         self.test_dataloader = test_dataloader
+        self.model_cache = model_cache
         self.model = BERTModel(pretrain_dir).to(device)
         self.criterion = nn.BCELoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
 
     def train(self):
+        recorder = Recorder()
         for epoch in range(self.epoch):
             print('----epoch %d----' % epoch)
             self.model.train()
@@ -52,6 +54,18 @@ class Trainer:
                 avg_loss.add(loss.item())
             results = self.test(self.val_dataloader)
             print('epoch %d: loss = %.4f, acc = %.4f, f1 = %.4f, auc = %.4f' % (epoch+1, avg_loss.get(), results['accuracy'], results['f1'], results['auc']))
+
+            # early stop
+            decision = recorder.update(results['f1'])
+            if decision == 'save':
+                torch.save(self.model.state_dict(), self.model_cache)
+            elif decision == 'stop':
+                break
+            elif decision == 'continue':
+                continue
+        
+        # load best model
+        self.model.load_state_dict(torch.load(self.model_cache))
         print('----test----')
         results = self.test(self.test_dataloader)
         print('test: acc = %.4f, f1 = %.4f, auc = %.4f' % (results['accuracy'], results['f1'], results['auc']))

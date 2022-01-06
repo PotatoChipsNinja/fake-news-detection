@@ -16,7 +16,8 @@ def parse_args():
     parser.add_argument('--max-len', type=int, default=512)
     parser.add_argument('--epoch', type=int, default=20)
     parser.add_argument('--lr', type=float, default=1e-3)
-    parser.add_argument('--dataloader-cache', default='./data/dataloader.pkl')
+    parser.add_argument('--dataloader-cache', default='./cache/dataloader.pkl')
+    parser.add_argument('--model-cache', default='./cache/model.pkl')
     return parser.parse_args()
 
 def main(args):
