@@ -22,9 +22,9 @@ def parse_args():
     return parser.parse_args()
 
 def main(args):
-    device = 'cuda' if args.cuda and torch.cuda.is_available() else 'cpu'
     if args.gpu is not None:
         os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+    device = 'cuda' if args.cuda and torch.cuda.is_available() else 'cpu'
 
     category_dict = {
         "科技": 0,
