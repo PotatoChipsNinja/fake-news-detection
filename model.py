@@ -1,3 +1,4 @@
+import os
 import torch
 from torch import nn, optim
 from transformers import BertModel
@@ -37,6 +38,9 @@ class Trainer:
 
     def train(self):
         recorder = Recorder()
+        if not os.path.isdir(os.path.dirname(self.model_cache)):
+            os.makedirs(os.path.dirname(self.model_cache))
+
         for epoch in range(self.epoch):
             print('----epoch %d----' % epoch)
             self.model.train()

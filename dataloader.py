@@ -41,7 +41,9 @@ def get_dataloader(data_dir, pretrain_dir, batch_size, category_dict, max_len, d
         train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
         val_dataloader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
         test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-        
+
+        if not os.path.isdir(os.path.dirname(dataloader_cache)):
+            os.makedirs(os.path.dirname(dataloader_cache))
         with open(dataloader_cache, 'wb') as f:
             pickle.dump((train_dataloader, val_dataloader, test_dataloader), f)
 
