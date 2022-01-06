@@ -25,19 +25,20 @@ class BERTModel(nn.Module):
         return output
 
 class Trainer:
-    def __init__(self, device, pretrain_dir, train_dataloader, val_dataloader, test_dataloader, epoch, lr, model_cache):
+    def __init__(self, device, pretrain_dir, train_dataloader, val_dataloader, test_dataloader, epoch, lr, early_stop, model_cache):
         self.device = device
         self.epoch = epoch
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
         self.test_dataloader = test_dataloader
+        self.early_stop = early_stop
         self.model_cache = model_cache
         self.model = BERTModel(pretrain_dir).to(device)
         self.criterion = nn.BCELoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
 
     def train(self):
-        recorder = Recorder()
+        recorder = Recorder(self.early_stop)
         if not os.path.isdir(os.path.dirname(self.model_cache)):
             os.makedirs(os.path.dirname(self.model_cache))
 

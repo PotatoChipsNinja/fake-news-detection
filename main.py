@@ -16,6 +16,7 @@ def parse_args():
     parser.add_argument('--max-len', type=int, default=512)
     parser.add_argument('--epoch', type=int, default=20)
     parser.add_argument('--lr', type=float, default=1e-3)
+    parser.add_argument('--early-stop', type=int, default=3)
     parser.add_argument('--dataloader-cache', default='./cache/dataloader.pkl')
     parser.add_argument('--model-cache', default='./cache/model.pkl')
     return parser.parse_args()
@@ -39,7 +40,7 @@ def main(args):
     }
 
     train_dataloader, val_dataloader, test_dataloader = get_dataloader(args.data_dir, args.pretrain_dir, args.batch_size, category_dict, args.max_len, args.dataloader_cache)
-    trainer = Trainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.model_cache)
+    trainer = Trainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_cache)
     trainer.train()
 
     return 0
