@@ -59,7 +59,7 @@ class Trainer:
             print('epoch %d: loss = %.4f, acc = %.4f, f1 = %.4f, auc = %.4f' % (epoch+1, avg_loss.get(), results['total']['accuracy'], results['total']['f1'], results['total']['auc']))
 
             # early stop
-            decision = recorder.update(results['f1'])
+            decision = recorder.update(results['total']['f1'])
             if decision == 'save':
                 torch.save(self.model.state_dict(), self.model_save_path)
             elif decision == 'stop':
