@@ -4,12 +4,13 @@ import torch
 import argparse
 
 from dataloader import get_dataloader
-from model import Trainer
+from model.mlp import Trainer as MLPTrainer
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--cuda', action='store_true')
     parser.add_argument('--gpu')
+    parser.add_argument('--model')
     parser.add_argument('--data-dir', default='./data')
     parser.add_argument('--pretrain-dir', default='./pretrain')
     parser.add_argument('--batch-size', type=int, default=32)
@@ -17,14 +18,17 @@ def parse_args():
     parser.add_argument('--epoch', type=int, default=20)
     parser.add_argument('--lr', type=float, default=1e-3)
     parser.add_argument('--early-stop', type=int, default=3)
-    parser.add_argument('--dataloader-cache', default='./cache/dataloader.pkl')
-    parser.add_argument('--model-cache', default='./cache/model.pkl')
+    parser.add_argument('--dataloader-cache', default='./data/dataloader.pkl')
+    parser.add_argument('--model-save-dir', default='./params')
     return parser.parse_args()
 
 def main(args):
     if args.gpu is not None:
         os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
     device = 'cuda' if args.cuda and torch.cuda.is_available() else 'cpu'
+
+    if not os.path.isdir(args.model_save_dir):
+        os.makedirs(args.model_save_dir)
 
     category_dict = {
         "科技": 0,
@@ -40,8 +44,16 @@ def main(args):
     }
 
     train_dataloader, val_dataloader, test_dataloader = get_dataloader(args.data_dir, args.pretrain_dir, args.batch_size, category_dict, args.max_len, args.dataloader_cache)
-    trainer = Trainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_cache)
+    if args.model == 'mlp':
+        trainer = MLPTrainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir)
+    else:
+        print('There is no model called "%s"' % args.model)
+        return -1
+
     trainer.train()
+    # trainer.model.load_state_dict(torch.load('./params/params_mlp.pkl'))
+    # results = trainer.test(test_dataloader)
+    # print(results)
 
     return 0
 
