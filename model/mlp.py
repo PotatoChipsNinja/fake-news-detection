@@ -57,7 +57,7 @@ class Trainer:
                 self.optimizer.step()
                 avg_loss.add(loss.item())
             results = self.test(self.val_dataloader)
-            print('epoch %d: loss = %.4f, acc = %.4f, f1 = %.4f, auc = %.4f' % (epoch+1, avg_loss.get(), results['accuracy'], results['f1'], results['auc']))
+            print('epoch %d: loss = %.4f, acc = %.4f, f1 = %.4f, auc = %.4f' % (epoch+1, avg_loss.get(), results['total']['accuracy'], results['total']['f1'], results['total']['auc']))
 
             # early stop
             decision = recorder.update(results['f1'])
@@ -72,7 +72,7 @@ class Trainer:
         self.model.load_state_dict(torch.load(self.model_save_path))
         print('----test----')
         results = self.test(self.test_dataloader)
-        print('test: acc = %.4f, f1 = %.4f, auc = %.4f' % (results['accuracy'], results['f1'], results['auc']))
+        print('test: acc = %.4f, f1 = %.4f, auc = %.4f' % (results['total']['accuracy'], results['total']['f1'], results['total']['auc']))
 
     def test(self, dataloader):
         self.model.eval()
