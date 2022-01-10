@@ -39,3 +39,9 @@ def metrics(y_true, y_score):
     results['recall'] = recall_score(y_true, y_pred, average='macro')
     results['auc'] = roc_auc_score(y_true, y_score)
     return results
+
+def split(y_true, y_score, category, category_num):
+    y_per_category = []
+    for category_id in range(category_num):
+        y_per_category.append((y_true[category == category_id], y_score[category == category_id]))
+    return y_per_category

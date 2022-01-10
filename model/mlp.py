@@ -5,7 +5,7 @@ from torch.nn.modules.dropout import Dropout
 from transformers import BertModel
 from tqdm import tqdm
 
-from utils import Averager, Recorder, metrics
+from utils import Averager, Recorder, split, metrics
 
 class BERTModel(nn.Module):
     def __init__(self, hidden_dim=512, dropout=0.2):
@@ -24,13 +24,14 @@ class BERTModel(nn.Module):
         return output
 
 class Trainer:
-    def __init__(self, device, pretrain_dir, train_dataloader, val_dataloader, test_dataloader, epoch, lr, early_stop, model_save_dir):
+    def __init__(self, device, pretrain_dir, train_dataloader, val_dataloader, test_dataloader, epoch, lr, early_stop, model_save_dir, category_dict):
         self.device = device
         self.epoch = epoch
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
         self.test_dataloader = test_dataloader
         self.early_stop = early_stop
+        self.category_dict = category_dict
         self.model_save_path = os.path.join(model_save_dir, 'params_mlp.pkl')
         self.model = BERTModel().to(device)
         self.criterion = nn.BCELoss()
@@ -75,6 +76,7 @@ class Trainer:
 
     def test(self, dataloader):
         self.model.eval()
+        category = torch.empty(0)
         y_true = torch.empty(0)
         y_score = torch.empty(0)
         for i, batch in enumerate(tqdm(dataloader)):
@@ -85,6 +87,13 @@ class Trainer:
                 output = self.model(feature)
             output = output.squeeze().cpu()
             y_score = torch.cat((y_score, output))
-            label = batch['label']
-            y_true = torch.cat((y_true, label))
-        return metrics(y_true, y_score)
+            y_true = torch.cat((y_true, batch['label']))
+            category = torch.cat((category, batch['category']))
+
+        results = dict()
+        results['total'] = metrics(y_true, y_score)
+        y_per_category = split(y_true, y_score, category, len(self.category_dict))
+        for category_name in self.category_dict:
+            category_id = self.category_dict[category_name]
+            results[category_name] = metrics(y_per_category[category_id][0], y_per_category[category_id][1])
+        return results
