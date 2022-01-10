@@ -1,16 +1,15 @@
 import os
 import torch
 from torch import nn, optim
-from torch.nn.modules.dropout import Dropout
 from transformers import BertModel
 from tqdm import tqdm
 
 from utils import Averager, Recorder, split, metrics
 
-class BERTModel(nn.Module):
+class Model(nn.Module):
     def __init__(self, hidden_dim=512, dropout=0.2):
-        super(BERTModel, self).__init__()
-        self.linear_relu_stack = nn.Sequential(
+        super(Model, self).__init__()
+        self.mlp = nn.Sequential(
             nn.Linear(768, hidden_dim),
             nn.BatchNorm1d(hidden_dim),
             nn.ReLU(),
@@ -19,7 +18,7 @@ class BERTModel(nn.Module):
         )
 
     def forward(self, feature):
-        output = self.linear_relu_stack(feature)
+        output = self.mlp(feature)
         output = torch.sigmoid(output)
         return output
 
@@ -33,7 +32,7 @@ class Trainer:
         self.early_stop = early_stop
         self.category_dict = category_dict
         self.model_save_path = os.path.join(model_save_dir, 'params_mlp.pkl')
-        self.model = BERTModel().to(device)
+        self.model = Model().to(device)
         self.criterion = nn.BCELoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
         self.bert = BertModel.from_pretrained('bert-base-chinese', cache_dir=pretrain_dir).to(device)
@@ -93,7 +92,6 @@ class Trainer:
         results = dict()
         results['total'] = metrics(y_true, y_score)
         y_per_category = split(y_true, y_score, category, len(self.category_dict))
-        for category_name in self.category_dict:
-            category_id = self.category_dict[category_name]
+        for category_name, category_id in self.category_dict.items():
             results[category_name] = metrics(y_per_category[category_id][0], y_per_category[category_id][1])
         return results
