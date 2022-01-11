@@ -4,37 +4,15 @@ from torch import nn, optim
 from transformers import BertModel
 from tqdm import tqdm
 
+from functions import CNNExtractor, MLP
 from utils import Averager, Recorder, split, metrics
 
-class CNNExtractor(nn.Module):
-    def __init__(self, feature_kernel, input_dim):
-        super(CNNExtractor, self).__init__()
-        self.convs = nn.ModuleList([nn.Conv1d(input_dim, feature_num, kernel_size) for kernel_size, feature_num in feature_kernel.items()])
-
-    def forward(self, input):
-        # (32, 512, 768)
-        input = input.permute(0, 2, 1)
-        # (32, 768, 512)
-        feature = [conv(input) for conv in self.convs]
-        # [(32, 64, 512), (32, 64, 511), (32, 64, 510), (32, 64, 508), (32, 64, 503)]
-        feature = [torch.max_pool1d(f, f.shape[-1]).squeeze() for f in feature]
-        # [(32, 64), (32, 64), (32, 64), (32, 64), (32, 64)]
-        feature = torch.cat(feature, dim=1)
-        # (32, 320)
-        return feature
-
 class Model(nn.Module):
-    def __init__(self, feature_kernel={1: 64, 2: 64, 3: 64, 5: 64, 10: 64}, hidden_dim=512, dropout=0.2):
+    def __init__(self, feature_kernel={1: 64, 2: 64, 3: 64, 5: 64, 10: 64}, hidden_dims=[512], dropout=0.2):
         super(Model, self).__init__()
         self.convs = CNNExtractor(feature_kernel, 768)
         mlp_input_shape = sum([feature_num for _, feature_num in feature_kernel.items()])
-        self.mlp = nn.Sequential(
-            nn.Linear(mlp_input_shape, hidden_dim),
-            nn.BatchNorm1d(hidden_dim),
-            nn.ReLU(),
-            nn.Dropout(p=dropout),
-            nn.Linear(hidden_dim, 1)
-        )
+        self.mlp = MLP(mlp_input_shape, hidden_dims, 1, dropout)
 
     def forward(self, feature):
         output = self.convs(feature)

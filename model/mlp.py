@@ -4,18 +4,13 @@ from torch import nn, optim
 from transformers import BertModel
 from tqdm import tqdm
 
+from functions import MLP
 from utils import Averager, Recorder, split, metrics
 
 class Model(nn.Module):
-    def __init__(self, hidden_dim=512, dropout=0.2):
+    def __init__(self, hidden_dims=[512], dropout=0.2):
         super(Model, self).__init__()
-        self.mlp = nn.Sequential(
-            nn.Linear(768, hidden_dim),
-            nn.BatchNorm1d(hidden_dim),
-            nn.ReLU(),
-            nn.Dropout(p=dropout),
-            nn.Linear(hidden_dim, 1)
-        )
+        self.mlp = MLP(768, hidden_dims, 1, dropout)
 
     def forward(self, feature):
         output = self.mlp(feature)
