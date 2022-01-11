@@ -24,7 +24,7 @@ class Model(nn.Module):
         return torch.sigmoid(label_pred), domain_pred
 
 class Trainer:
-    def __init__(self, device, pretrain_dir, train_dataloader, val_dataloader, test_dataloader, epoch, lr, early_stop, model_save_dir, category_dict):
+    def __init__(self, device, pretrain_model, pretrain_dim, pretrain_dir, train_dataloader, val_dataloader, test_dataloader, epoch, lr, early_stop, model_save_dir, category_dict):
         self.device = device
         self.epoch = epoch
         self.train_dataloader = train_dataloader
@@ -33,11 +33,11 @@ class Trainer:
         self.early_stop = early_stop
         self.category_dict = category_dict
         self.model_save_path = os.path.join(model_save_dir, 'params_eann.pkl')
-        self.model = Model(len(category_dict)).to(device)
+        self.model = Model(len(category_dict), emb_dim=pretrain_dim).to(device)
         self.label_criterion = nn.BCELoss()
         self.domain_criterion = nn.CrossEntropyLoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
-        self.bert = BertModel.from_pretrained('bert-base-chinese', cache_dir=pretrain_dir).to(device)
+        self.bert = BertModel.from_pretrained(pretrain_model, cache_dir=pretrain_dir).to(device)
 
     def train(self):
         recorder = Recorder(self.early_stop)

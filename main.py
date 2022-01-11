@@ -14,6 +14,8 @@ def parse_args():
     parser.add_argument('--gpu')
     parser.add_argument('--model')
     parser.add_argument('--data-dir', default='./data')
+    parser.add_argument('--pretrain-model', default='bert-base-chinese')
+    parser.add_argument('--pretrain-dim', type=int, default=768)
     parser.add_argument('--pretrain-dir', default='./pretrain')
     parser.add_argument('--batch-size', type=int, default=32)
     parser.add_argument('--max-len', type=int, default=512)
@@ -45,13 +47,13 @@ def main(args):
         "无法确定": 9
     }
 
-    train_dataloader, val_dataloader, test_dataloader = get_dataloader(args.data_dir, args.pretrain_dir, args.batch_size, category_dict, args.max_len, args.dataloader_cache)
+    train_dataloader, val_dataloader, test_dataloader = get_dataloader(args.data_dir, args.pretrain_model, args.pretrain_dir, args.batch_size, category_dict, args.max_len, args.dataloader_cache)
     if args.model == 'mlp':
-        trainer = MLPTrainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+        trainer = MLPTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     elif args.model == 'textcnn':
-        trainer = TextCNNTrainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+        trainer = TextCNNTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     elif args.model == 'eann':
-        trainer = EANNTrainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+        trainer = EANNTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     else:
         print('There is no model called "%s"' % args.model)
         return -1
