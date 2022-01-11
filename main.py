@@ -6,6 +6,7 @@ import argparse
 from dataloader import get_dataloader
 from model.mlp import Trainer as MLPTrainer
 from model.textcnn import Trainer as TextCNNTrainer
+from model.eann import Trainer as EANNTrainer
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -49,6 +50,8 @@ def main(args):
         trainer = MLPTrainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     elif args.model == 'textcnn':
         trainer = TextCNNTrainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    elif args.model == 'eann':
+        trainer = EANNTrainer(device, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     else:
         print('There is no model called "%s"' % args.model)
         return -1
