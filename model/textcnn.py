@@ -8,9 +8,9 @@ from functions import CNNExtractor, MLP
 from utils import Averager, Recorder, split, metrics
 
 class Model(nn.Module):
-    def __init__(self, feature_kernel={1: 64, 2: 64, 3: 64, 5: 64, 10: 64}, hidden_dims=[512], dropout=0.2):
+    def __init__(self, emb_dim=768, feature_kernel={1: 64, 2: 64, 3: 64, 5: 64, 10: 64}, hidden_dims=[512], dropout=0.2):
         super(Model, self).__init__()
-        self.convs = CNNExtractor(feature_kernel, 768)
+        self.convs = CNNExtractor(feature_kernel, emb_dim)
         mlp_input_shape = sum([feature_num for _, feature_num in feature_kernel.items()])
         self.mlp = MLP(mlp_input_shape, hidden_dims, 1, dropout)
 

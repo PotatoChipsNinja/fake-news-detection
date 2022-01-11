@@ -8,10 +8,10 @@ from functions import CNNExtractor, MLP, ReverseLayerF
 from utils import Averager, Recorder, split, metrics
 
 class Model(nn.Module):
-    def __init__(self, task_num, feature_kernel={1: 64, 2: 64, 3: 64, 5: 64, 10: 64}, hidden_dims=[512], dropout=0.2, alpha=1):
+    def __init__(self, task_num, emb_dim=768, feature_kernel={1: 64, 2: 64, 3: 64, 5: 64, 10: 64}, hidden_dims=[512], dropout=0.2, alpha=1):
         super(Model, self).__init__()
         self.alpha = alpha
-        self.convs = CNNExtractor(feature_kernel, 768)
+        self.convs = CNNExtractor(feature_kernel, emb_dim)
         mlp_input_shape = sum([feature_num for _, feature_num in feature_kernel.items()])
         self.label_classifier = MLP(mlp_input_shape, hidden_dims, 1, dropout)
         self.domain_classifier = MLP(mlp_input_shape, hidden_dims, task_num, dropout)

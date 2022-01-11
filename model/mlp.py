@@ -8,9 +8,9 @@ from functions import MLP
 from utils import Averager, Recorder, split, metrics
 
 class Model(nn.Module):
-    def __init__(self, hidden_dims=[512], dropout=0.2):
+    def __init__(self, emb_dim=768, hidden_dims=[512], dropout=0.2):
         super(Model, self).__init__()
-        self.mlp = MLP(768, hidden_dims, 1, dropout)
+        self.mlp = MLP(emb_dim, hidden_dims, 1, dropout)
 
     def forward(self, feature):
         output = self.mlp(feature)
