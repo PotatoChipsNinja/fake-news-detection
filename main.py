@@ -8,6 +8,7 @@ from model.mlp import Trainer as MLPTrainer
 from model.textcnn import Trainer as TextCNNTrainer
 from model.eann import Trainer as EANNTrainer
 from model.bigru import Trainer as BiGRUTrainer
+from model.mdfend import Trainer as MDFENDTrainer
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -57,6 +58,8 @@ def main(args):
         trainer = EANNTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     elif args.model == 'bigru':
         trainer = BiGRUTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    elif args.model == 'mdfend':
+        trainer = MDFENDTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     else:
         print('There is no model called "%s"' % args.model)
         return -1
