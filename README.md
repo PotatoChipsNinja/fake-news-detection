@@ -38,7 +38,7 @@ python main.py --cuda --gpu 0 --model textcnn
 | `--batch-size` | Integer | Batch size | `32` |
 | `--max-len` | Integer | The maximum length of tokens | `512` |
 | `--epoch` | Integer | Training epoch | `20` |
-| `--lr` | Integer | Learning Rate | `1e-3` |
+| `--lr` | Float | Learning Rate | `1e-3` |
 | `--early-stop` | Integer | Early stopping epoch | `3` |
 | `--dataloader-cache` | String | The path of dataloader cache file | `./data/dataloader.pkl` |
 | `--model-save-dir` | String | The directory to save model parameters | `./params` |
