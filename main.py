@@ -4,7 +4,7 @@ import torch
 import argparse
 
 from dataloader import get_dataloader
-from model.mlp import Trainer as MLPTrainer
+from model.bert import Trainer as BERTTrainer
 from model.textcnn import Trainer as TextCNNTrainer
 from model.eann import Trainer as EANNTrainer
 from model.bigru import Trainer as BiGRUTrainer
@@ -50,8 +50,8 @@ def main(args):
     }
 
     train_dataloader, val_dataloader, test_dataloader = get_dataloader(args.data_dir, args.pretrain_model, args.pretrain_dir, args.batch_size, category_dict, args.max_len, args.dataloader_cache)
-    if args.model == 'mlp':
-        trainer = MLPTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    if args.model == 'bert':
+        trainer = BERTTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     elif args.model == 'textcnn':
         trainer = TextCNNTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     elif args.model == 'eann':
