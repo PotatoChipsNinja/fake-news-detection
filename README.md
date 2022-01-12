@@ -19,11 +19,13 @@
 ## Usage
 **For CPU:**
 ``` shell
-python main.py --model textcnn
+$ python main.py --model textcnn  # train
+$ python main.py --model textcnn --test ./params/params_textcnn.pt  # test
 ```
 **For GPU:**
 ``` shell
-python main.py --cuda --gpu 0 --model textcnn
+$ python main.py --cuda --gpu 0 --model textcnn  # train
+$ python main.py --cuda --gpu 0 --model textcnn --test ./params/params_textcnn.pt  # test
 ```
 
 | Argument | Type | Description | Default |
@@ -42,6 +44,7 @@ python main.py --cuda --gpu 0 --model textcnn
 | `--early-stop` | Integer | Early stopping epoch | `3` |
 | `--dataloader-cache` | String | The path of dataloader cache file | `./data/dataloader.pkl` |
 | `--model-save-dir` | String | The directory to save model parameters | `./params` |
+| `--test` | String | The path of model parameters file and run test | `None` |
 
 ## Results
 | Model | Accuracy | F1 | Precision | Recall | AUC |

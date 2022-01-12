@@ -26,6 +26,7 @@ def parse_args():
     parser.add_argument('--early-stop', type=int, default=3)
     parser.add_argument('--dataloader-cache', default='./data/dataloader.pkl')
     parser.add_argument('--model-save-dir', default='./params')
+    parser.add_argument('--test')
     return parser.parse_args()
 
 def main(args):
@@ -64,10 +65,12 @@ def main(args):
         print('There is no model called "%s"' % args.model)
         return -1
 
-    trainer.train()
-    # trainer.model.load_state_dict(torch.load('./params/params_mlp.pkl'))
-    # results = trainer.test(test_dataloader)
-    # print(results)
+    if args.test is None:
+        trainer.train()
+    else:
+        trainer.model.load_state_dict(torch.load(args.test))
+        results = trainer.test(test_dataloader)
+        print(results)
 
     return 0
 
