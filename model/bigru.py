@@ -8,7 +8,7 @@ from functions import MLP, MaskAttention
 from utils import Averager, Recorder, split, metrics
 
 class Model(nn.Module):
-    def __init__(self, emb_dim=768, rnn_hidden_size=768, hidden_dims=[512], dropout=0.2, num_layers=2):
+    def __init__(self, emb_dim=768, rnn_hidden_size=768, hidden_dims=[512], dropout=0.2, num_layers=1):
         super(Model, self).__init__()
         self.rnn = nn.GRU(input_size = emb_dim,
                           hidden_size = rnn_hidden_size,
@@ -35,7 +35,7 @@ class Trainer:
         self.test_dataloader = test_dataloader
         self.early_stop = early_stop
         self.category_dict = category_dict
-        self.model_save_path = os.path.join(model_save_dir, 'params_textcnn.pkl')
+        self.model_save_path = os.path.join(model_save_dir, 'params_bigru.pkl')
         self.model = Model(emb_dim=pretrain_dim).to(device)
         self.criterion = nn.BCELoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
