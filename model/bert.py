@@ -4,15 +4,17 @@ from torch import nn, optim
 from transformers import BertModel
 from tqdm import tqdm
 
-from functions import MLP
+from functions import MLP, MaskAttention
 from utils import Averager, Recorder, split, metrics
 
 class Model(nn.Module):
     def __init__(self, emb_dim=768, hidden_dims=[512], dropout=0.2):
         super(Model, self).__init__()
+        self.attention = MaskAttention(emb_dim)
         self.mlp = MLP(emb_dim, hidden_dims, 1, dropout)
 
-    def forward(self, feature):
+    def forward(self, feature, mask):
+        feature, _ = self.attention(feature, mask)
         output = self.mlp(feature)
         output = torch.sigmoid(output)
         return output
@@ -41,10 +43,10 @@ class Trainer:
             for i, batch in enumerate(tqdm(self.train_dataloader)):
                 input_ids = batch['input_ids'].to(self.device)
                 attention_mask = batch['attention_mask'].to(self.device)
-                feature = self.bert(input_ids, attention_mask).pooler_output.detach()
+                feature = self.bert(input_ids, attention_mask).last_hidden_state.detach()
                 label = batch['label'].float().to(self.device)
                 self.optimizer.zero_grad()
-                output = self.model(feature)
+                output = self.model(feature, attention_mask)
                 output = output.squeeze()
                 loss = self.criterion(output, label)
                 loss.backward()
@@ -76,9 +78,9 @@ class Trainer:
         for i, batch in enumerate(tqdm(dataloader)):
             input_ids = batch['input_ids'].to(self.device)
             attention_mask = batch['attention_mask'].to(self.device)
-            feature = self.bert(input_ids, attention_mask).pooler_output.detach()
+            feature = self.bert(input_ids, attention_mask).last_hidden_state.detach()
             with torch.no_grad():
-                output = self.model(feature)
+                output = self.model(feature, attention_mask)
             output = output.squeeze().cpu()
             y_score = torch.cat((y_score, output))
             y_true = torch.cat((y_true, batch['label']))
