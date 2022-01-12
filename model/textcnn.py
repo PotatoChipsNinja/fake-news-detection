@@ -29,7 +29,7 @@ class Trainer:
         self.test_dataloader = test_dataloader
         self.early_stop = early_stop
         self.category_dict = category_dict
-        self.model_save_path = os.path.join(model_save_dir, 'params_textcnn.pkl')
+        self.model_save_path = os.path.join(model_save_dir, 'params_textcnn.pt')
         self.model = Model(emb_dim=pretrain_dim).to(device)
         self.criterion = nn.BCELoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=lr)

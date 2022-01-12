@@ -32,7 +32,7 @@ class Trainer:
         self.test_dataloader = test_dataloader
         self.early_stop = early_stop
         self.category_dict = category_dict
-        self.model_save_path = os.path.join(model_save_dir, 'params_eann.pkl')
+        self.model_save_path = os.path.join(model_save_dir, 'params_eann.pt')
         self.model = Model(len(category_dict), emb_dim=pretrain_dim).to(device)
         self.label_criterion = nn.BCELoss()
         self.domain_criterion = nn.CrossEntropyLoss()
