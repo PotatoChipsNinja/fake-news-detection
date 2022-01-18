@@ -22,7 +22,13 @@ class Weibo21Dataset(Dataset):
             'input_ids': torch.tensor(inputs['input_ids']),
             'attention_mask': torch.tensor(inputs['attention_mask']),
             'category': self.category_dict[item['category']],
-            'label': item['label']
+            'label': item['label'],
+            'commentsCount': item['commentsCount'],
+            'repostsCount': item['repostsCount'],
+            'praiseCount': item['praiseCount'],
+            'userFollowCount': item['userFollowCount'],
+            'userFanCount': item['userFanCount'],
+            'userWeiboCount': item['userWeiboCount']
         }
 
 def get_dataloader(data_dir, pretrain_model, pretrain_dir, batch_size, category_dict, max_len, dataloader_cache):
@@ -30,9 +36,9 @@ def get_dataloader(data_dir, pretrain_model, pretrain_dir, batch_size, category_
         with open(dataloader_cache, 'rb') as f:
             train_dataloader, val_dataloader, test_dataloader = pickle.load(f)
     else:
-        train_path = os.path.join(data_dir, 'train.pkl')
-        val_path = os.path.join(data_dir, 'val.pkl')
-        test_path = os.path.join(data_dir, 'test.pkl')
+        train_path = os.path.join(data_dir, 'train_proc.pkl')
+        val_path = os.path.join(data_dir, 'val_proc.pkl')
+        test_path = os.path.join(data_dir, 'test_proc.pkl')
 
         train_dataset = Weibo21Dataset(train_path, category_dict, pretrain_model, pretrain_dir, max_len)
         val_dataset = Weibo21Dataset(val_path, category_dict, pretrain_model, pretrain_dir, max_len)
