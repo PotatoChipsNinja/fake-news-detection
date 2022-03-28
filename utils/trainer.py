@@ -13,7 +13,12 @@ class Trainer:
         self.test_dataloader = test_dataloader
         self.early_stop = early_stop
         self.category_dict = category_dict
-        self.bert = BertModel.from_pretrained(pretrain_model, cache_dir=pretrain_dir).to(device)
+        # self.bert = BertModel.from_pretrained(pretrain_model, cache_dir=pretrain_dir).to(device)
+        try:
+            self.bert = BertModel.from_pretrained(pretrain_dir).to(device)
+        except:
+            self.bert = BertModel.from_pretrained(pretrain_model).to(device)
+            self.bert.save_pretrained(pretrain_dir)
         # Need to define self.model_save_path, self.model, self.criterion and self.optimizer in derived class
 
     def get_loss(self, batch):
