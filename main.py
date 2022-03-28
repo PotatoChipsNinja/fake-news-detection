@@ -5,12 +5,15 @@ import argparse
 
 from dataloader import get_dataloader
 from model.bert import Trainer as BERTTrainer
-from model.textcnn import Trainer as TextCNNTrainer
-from model.eann import Trainer as EANNTrainer
-from model.bigru import Trainer as BiGRUTrainer
-from model.mdfend import Trainer as MDFENDTrainer
 from model.bertExt import Trainer as BERTExtTrainer
+from model.textcnn import Trainer as TextCNNTrainer
+from model.textcnnExt import Trainer as TextCNNExtTrainer
+from model.eann import Trainer as EANNTrainer
 from model.eannExt import Trainer as EANNExtTrainer
+from model.bigru import Trainer as BiGRUTrainer
+from model.bigruExt import Trainer as BiGRUExtTrainer
+from model.mdfend import Trainer as MDFENDTrainer
+from model.mdfendExt import Trainer as MDFENDExtTrainer
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -55,18 +58,24 @@ def main(args):
     train_dataloader, val_dataloader, test_dataloader = get_dataloader(args.data_dir, args.pretrain_model, args.pretrain_dir, args.batch_size, category_dict, args.max_len, args.dataloader_cache)
     if args.model == 'bert':
         trainer = BERTTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
-    elif args.model == 'textcnn':
-        trainer = TextCNNTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
-    elif args.model == 'eann':
-        trainer = EANNTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
-    elif args.model == 'bigru':
-        trainer = BiGRUTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
-    elif args.model == 'mdfend':
-        trainer = MDFENDTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     elif args.model == 'bertExt':
         trainer = BERTExtTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    elif args.model == 'textcnn':
+        trainer = TextCNNTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    elif args.model == 'textcnnExt':
+        trainer = TextCNNExtTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    elif args.model == 'eann':
+        trainer = EANNTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     elif args.model == 'eannExt':
         trainer = EANNExtTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    elif args.model == 'bigru':
+        trainer = BiGRUTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    elif args.model == 'bigruExt':
+        trainer = BiGRUExtTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    elif args.model == 'mdfend':
+        trainer = MDFENDTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    elif args.model == 'mdfendExt':
+        trainer = MDFENDExtTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     else:
         print('There is no model called "%s"' % args.model)
         return -1
