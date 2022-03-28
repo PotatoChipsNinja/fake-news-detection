@@ -9,7 +9,8 @@ from model.textcnn import Trainer as TextCNNTrainer
 from model.eann import Trainer as EANNTrainer
 from model.bigru import Trainer as BiGRUTrainer
 from model.mdfend import Trainer as MDFENDTrainer
-from model.my import Trainer as MyTrainer
+from model.bertExt import Trainer as BERTExtTrainer
+from model.eannExt import Trainer as EANNExtTrainer
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -62,8 +63,10 @@ def main(args):
         trainer = BiGRUTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     elif args.model == 'mdfend':
         trainer = MDFENDTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
-    elif args.model == 'my':
-        trainer = MyTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    elif args.model == 'bertExt':
+        trainer = BERTExtTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
+    elif args.model == 'eannExt':
+        trainer = EANNExtTrainer(device, args.pretrain_model, args.pretrain_dim, args.pretrain_dir, train_dataloader, val_dataloader, test_dataloader, args.epoch, args.lr, args.early_stop, args.model_save_dir, category_dict)
     else:
         print('There is no model called "%s"' % args.model)
         return -1

@@ -26,7 +26,7 @@ class Model(nn.Module):
 class Trainer(TrainerBase):
     def __init__(self, device, pretrain_model, pretrain_dim, pretrain_dir, train_dataloader, val_dataloader, test_dataloader, epoch, lr, early_stop, model_save_dir, category_dict):
         super(Trainer, self).__init__(device, pretrain_model, pretrain_dim, pretrain_dir, train_dataloader, val_dataloader, test_dataloader, epoch, lr, early_stop, model_save_dir, category_dict)
-        self.model_save_path = os.path.join(model_save_dir, 'params_my.pt')
+        self.model_save_path = os.path.join(model_save_dir, 'params_bertExt.pt')
         self.model = Model(emb_dim=pretrain_dim).to(device)
         self.criterion = nn.BCELoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
