@@ -32,6 +32,7 @@ $ python main.py --cuda --gpu 0 --model textcnn --test ./params/params_textcnn.p
 |:-:|:-:|:-:|:-:|
 | `--cuda` | Boolean | Use CUDA | `False` |
 | `--gpu` | String | `CUDA_VISIBLE_DEVICES` | `None` |
+| `--seed` | Integer | random seed | `2022` |
 | `--model` | String | Model name | `None` |
 | `--data-dir` | String | The directory of datasets | `./data` |
 | `--pretrain-model` | String | Choose the pretrained model to use | `bert-base-chinese` |

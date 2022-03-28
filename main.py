@@ -1,7 +1,9 @@
 import os
 import sys
 import torch
+import random
 import argparse
+import numpy as np
 
 from dataloader import get_dataloader
 from model.bert import Trainer as BERTTrainer
@@ -19,6 +21,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--cuda', action='store_true')
     parser.add_argument('--gpu')
+    parser.add_argument('--seed', type=int, default=2022)
     parser.add_argument('--model')
     parser.add_argument('--data-dir', default='./data')
     parser.add_argument('--pretrain-model', default='bert-base-chinese')
@@ -34,7 +37,19 @@ def parse_args():
     parser.add_argument('--test')
     return parser.parse_args()
 
+def set_seed(seed):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+    # torch.backends.cudnn.enabled = False
+
 def main(args):
+    set_seed(args.seed)
+
     if args.gpu is not None:
         os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
     device = 'cuda' if args.cuda and torch.cuda.is_available() else 'cpu'
