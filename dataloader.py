@@ -8,7 +8,11 @@ class Weibo21Dataset(Dataset):
     def __init__(self, path, category_dict, pretrain_model, pretrain_dir, max_len):
         self.category_dict = category_dict
         self.max_len = max_len
-        self.tokenizer = BertTokenizer.from_pretrained(pretrain_model, cache_dir=pretrain_dir)
+        try:
+            self.tokenizer = BertTokenizer.from_pretrained(pretrain_dir)
+        except:
+            self.tokenizer = BertTokenizer.from_pretrained(pretrain_model, cache_dir=os.path.join(pretrain_dir, 'cache'))
+            self.tokenizer.save_pretrained(pretrain_dir)
         with open(path, 'rb') as f:
             self.data = pickle.load(f)
 
