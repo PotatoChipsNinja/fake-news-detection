@@ -27,7 +27,7 @@ def parse_args():
     parser.add_argument('--pretrain-model', default='bert-base-chinese')
     parser.add_argument('--pretrain-dim', type=int, default=768)
     parser.add_argument('--pretrain-dir', default='./pretrain')
-    parser.add_argument('--batch-size', type=int, default=32)
+    parser.add_argument('--batch-size', type=int, default=64)
     parser.add_argument('--max-len', type=int, default=512)
     parser.add_argument('--epoch', type=int, default=20)
     parser.add_argument('--lr', type=float, default=1e-3)
@@ -67,7 +67,7 @@ def main(args):
         "财经商业": 6,
         "文体娱乐": 7,
         "社会生活": 8,
-        "无法确定": 9
+        # "无法确定": 9
     }
 
     train_dataloader, val_dataloader, test_dataloader = get_dataloader(args.data_dir, args.pretrain_model, args.pretrain_dir, args.batch_size, category_dict, args.max_len, args.dataloader_cache)
