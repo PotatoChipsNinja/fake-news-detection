@@ -40,9 +40,9 @@ def get_dataloader(data_dir, pretrain_model, pretrain_dir, batch_size, category_
         with open(dataloader_cache, 'rb') as f:
             train_dataloader, val_dataloader, test_dataloader = pickle.load(f)
     else:
-        train_path = os.path.join(data_dir, 'train_proc.pkl')
-        val_path = os.path.join(data_dir, 'val_proc.pkl')
-        test_path = os.path.join(data_dir, 'test_proc.pkl')
+        train_path = os.path.join(data_dir, 'train_only_9_domain.pkl')
+        val_path = os.path.join(data_dir, 'val_only_9_domain.pkl')
+        test_path = os.path.join(data_dir, 'test_only_9_domain.pkl')
 
         train_dataset = Weibo21Dataset(train_path, category_dict, pretrain_model, pretrain_dir, max_len)
         val_dataset = Weibo21Dataset(val_path, category_dict, pretrain_model, pretrain_dir, max_len)
